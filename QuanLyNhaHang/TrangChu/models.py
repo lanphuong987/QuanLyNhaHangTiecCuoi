@@ -8,8 +8,8 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    avatar = models.ImageField(upload_to='upload/%Y/%')
-    phone = models.CharField(max_length=20, null=False, unique=True)
+    avatar = models.ImageField(upload_to='upload/%Y/%m')
+    phone = models.CharField(max_length=10, null=False, unique=True)
 
 
 class Employee(models.Model):
@@ -19,6 +19,14 @@ class Employee(models.Model):
     type = models.IntegerField(null=False)
     date_start = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
+
+
+class Customer(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='User_Customer')
+    address = models.TextField(null=True, blank=True)
+    date_start = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
+
 
 
 class CategoryBase(models.Model):
@@ -80,7 +88,7 @@ class WeddingRoomDeTails(models.Model):
 
 
 class WeddingBill(models.Model):
-    costumer_id = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=0, related_name='CostumerBill')
+    customer_id = models.ForeignKey(Customer, on_delete=models.SET_DEFAULT, default=0, related_name='CostumerBill')
     create_date = models.DateTimeField(auto_now_add=True)
     date_start = models.DateTimeField()
     guest = models.IntegerField(null=False)
