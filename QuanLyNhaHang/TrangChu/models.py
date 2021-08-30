@@ -4,6 +4,7 @@ from collections import deque
 # import abstract as abstract
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from ckeditor.fields import RichTextField
 # Create your models here.
 
 
@@ -22,7 +23,10 @@ class Employee(models.Model):
 
 
 class Customer(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='User_Customer')
+    user_id = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=0, related_name='User_Customer')
+    fullname = models.TextField(null=True, blank=True)
+    phonecus = models.CharField(max_length=10, null=True, unique=True)
+    email = models.TextField(null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     date_start = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
@@ -36,6 +40,9 @@ class CategoryBase(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Base(models.Model):
     class Meta:
@@ -46,7 +53,10 @@ class Base(models.Model):
     description = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=True)
     create_date = models.DateTimeField(auto_now_add=True)
-    description = models.TextField(null=True, blank=True)
+    description = RichTextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
 
 
 class WeddingRoomType(CategoryBase):
