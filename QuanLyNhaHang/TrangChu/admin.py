@@ -1,9 +1,10 @@
 from django.contrib import admin
+from django.contrib.auth.models import Permission
 from django import forms
 from django.db.models import Count
 from django.template.response import TemplateResponse
 
-from .models import Employee, WeddingRoom, WeddingRoomType, WeddingRoomDeTails, Service, ServiceCategory, Customer
+from .models import Employee, WeddingRoom, WeddingRoomType, WeddingRoomDeTails, Service, ServiceCategory, Customer, User
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.urls import path
 # Register your models here.
@@ -53,12 +54,24 @@ class QLNHAppAdminSite(admin.AdminSite):
 
 admin_site = QLNHAppAdminSite('NHTC')
 
-admin_site.register(Employee)
-admin_site.register(Customer)
+# admin_site.register(Employee)
+# admin_site.register(Customer)
+#
+# admin_site.register(WeddingRoomType, WeddingRTAdmin)
+# admin_site.register(WeddingRoom, WeddingRAdmin)
+# admin_site.register(WeddingRoomDeTails)
+#
+# admin_site.register(Service)
+# admin_site.register(ServiceCategory)
+admin.site.register(User)
+admin.site.register(Employee)
+admin.site.register(Customer)
 
-admin_site.register(WeddingRoomType, WeddingRTAdmin)
-admin_site.register(WeddingRoom, WeddingRAdmin)
-admin_site.register(WeddingRoomDeTails)
+admin.site.register(WeddingRoomType, WeddingRTAdmin)
+admin.site.register(WeddingRoom, WeddingRAdmin)
+admin.site.register(WeddingRoomDeTails)
 
-admin_site.register(Service)
-admin_site.register(ServiceCategory)
+admin.site.register(Service)
+admin.site.register(ServiceCategory)
+
+admin.site.register(Permission)
