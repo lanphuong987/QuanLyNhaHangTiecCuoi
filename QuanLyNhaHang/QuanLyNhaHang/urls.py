@@ -18,10 +18,10 @@ from django.urls import path, include
 from django.urls import path, include, re_path
 
 
-
 urlpatterns = [
     path('', include('TrangChu.urls')),
     path('admin/', admin.site.urls),
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     # path('admin/', admin.site.urls),
     re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
 ]

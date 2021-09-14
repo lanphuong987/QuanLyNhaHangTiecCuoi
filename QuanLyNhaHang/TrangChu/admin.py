@@ -51,7 +51,6 @@ class QLNHAppAdminSite(admin.AdminSite):
         })
 
 
-
 admin_site = QLNHAppAdminSite('NHTC')
 
 # admin_site.register(Employee)
