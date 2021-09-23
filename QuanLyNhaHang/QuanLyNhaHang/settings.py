@@ -25,8 +25,7 @@ SECRET_KEY = 'django-insecure-nl-#-5_$7av2w3wwh#h803a885*c$nqym(eo^saquiirk@#ks3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -37,8 +36,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'TrangChu.apps.TrangchuConfig'
+    'TrangChu.apps.TrangchuConfig',
+    'ckeditor',
+    'ckeditor_uploader',
+    'rest_framework',
+    'oauth2_provider',
+    'corsheaders',
+    'drf_yasg'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    )
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'QuanLyNhaHang.urls'
@@ -79,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'quanlynhahangtieccuoidb',
         'USER': 'root',
-        'PASSWORD':'ngoduongvanxuyen',
+        'PASSWORD':'Phuong123%',
         'HOST':''
 
     }
@@ -123,6 +137,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_ROOT = '%s/TrangChu/static' % BASE_DIR
+CKEDITOR_UPLOAD_PATH = 'sanhcuoi/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

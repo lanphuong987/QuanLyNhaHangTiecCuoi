@@ -1,0 +1,11 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+<h1>So loai phong cuoi: {{ weddingroomtype_count }}</h1>
+<ul>
+    {% for s in stats %}
+    <li><strong>{{ s.name }}</strong> co: {{s.weddingroom_count}}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
