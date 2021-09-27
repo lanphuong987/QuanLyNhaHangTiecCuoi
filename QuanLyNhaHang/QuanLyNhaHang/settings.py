@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'rest_framework',
-    'oauth2_provider',
     'drf_yasg',
 ]
 
