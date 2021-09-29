@@ -25,8 +25,6 @@ SECRET_KEY = 'django-insecure-nl-#-5_$7av2w3wwh#h803a885*c$nqym(eo^saquiirk@#ks3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-CORS_ORIGIN_ALLOW_ALL = True
-
 # Application definition
 
 INSTALLED_APPS = [
