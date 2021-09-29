@@ -1,8 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from rest_framework import viewsets, generics, permissions
+from rest_framework import viewsets, generics, permissions, status
 from rest_framework.parsers import MultiPartParser
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from django.http import Http404
 from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
     WeddingBill, MenuAndCategory, CostsIncurred, WeddingRoomDeTails, User, Rating, BookTrip, Notification, MenuInBill, \
     ServiceInBill
@@ -10,7 +14,7 @@ from .serializers import WeddingRTSerializer, WeddingRoomSerializer, EmployeeSer
     FoodCategorySerializer, ServiceCategorySerializer, MenuSerializer, ServiceSerializer, WeddingBillSerializer, \
     MenuAndCategorySerializer, CostsIncurredSerializer, WeddingRDetailsSerializer, UserSerializer, RatingSerializer, \
     BookTripSerializer, NotificationSerializer, MenuInBillSerializer, ServiceInBillSerializer
-
+from django.conf import settings
 # Create your views here.
 
 
@@ -121,6 +125,10 @@ class ServiceInBillViewSet(viewsets.ViewSet, generics.ListAPIView):
 def index(request):
     return HttpResponse("Quản Lý Nhà Hàng Tiệc Cưới")
 
+
+class AuthInfo(APIView):
+    def get(self, request):
+        return Response(settings.OAUTH2_INFO, status=status.HTTP_200_OK)
 
 # def welcome(request, year):
 #     return HttpResponse("HELLO " + str(year))
