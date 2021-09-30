@@ -8,11 +8,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.http import Http404
 from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
-    WeddingBill, MenuAndCategory, CostsIncurred, WeddingRoomDeTails, User, Rating, BookTrip, Notification, MenuInBill, \
+    WeddingBill, CostsIncurred, WeddingRoomDeTails, User, Rating, BookTrip, Notification, MenuInBill, \
     ServiceInBill
 from .serializers import WeddingRTSerializer, WeddingRoomSerializer, EmployeeSerializer, CustomerSerializer, \
     FoodCategorySerializer, ServiceCategorySerializer, MenuSerializer, ServiceSerializer, WeddingBillSerializer, \
-    MenuAndCategorySerializer, CostsIncurredSerializer, WeddingRDetailsSerializer, UserSerializer, RatingSerializer, \
+    CostsIncurredSerializer, WeddingRDetailsSerializer, UserSerializer, RatingSerializer, \
     BookTripSerializer, NotificationSerializer, MenuInBillSerializer, ServiceInBillSerializer
 from django.conf import settings
 # Create your views here.
@@ -69,10 +69,10 @@ class WeddingBillViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = WeddingBill.objects.all()
     serializer_class = WeddingBillSerializer
 
-
-class MenuAndCategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = MenuAndCategory.objects.all()
-    serializer_class = MenuAndCategorySerializer
+#
+# class MenuAndCategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
+#     queryset = MenuAndCategory.objects.all()
+#     serializer_class = MenuAndCategorySerializer
 
 
 class CostsIncurredViewSet(viewsets.ViewSet, generics.ListAPIView):

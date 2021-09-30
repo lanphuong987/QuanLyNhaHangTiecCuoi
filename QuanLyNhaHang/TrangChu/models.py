@@ -84,11 +84,12 @@ class WeddingRoom(Base):
 
 class Menu(Base):
     hinh = models.ImageField(upload_to='menu/%Y/%m')
+    food_category = models.ForeignKey(FoodCategory, null=True, on_delete=models.SET_NULL, related_name= 'FoodCategory')
 
 
-class MenuAndCategory(models.Model):
-    menu_category = models.ForeignKey(FoodCategory, on_delete=models.SET_NULL, null=True, related_name='MenuCategory' )
-    menu = models.ForeignKey(Menu, on_delete=models.SET_NULL, null=True, related_name='MenuId')
+# class MenuAndCategory(models.Model):
+#     menu_category = models.ForeignKey(FoodCategory, on_delete=models.SET_NULL, null=True, related_name='MenuCategory' )
+#     menu = models.ForeignKey(Menu, on_delete=models.SET_NULL, null=True, related_name='MenuId')
 
 
 class Service(Base):
