@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
-    WeddingBill, MenuAndCategory, CostsIncurred, Rating, Notification, BookTrip, MenuInBill, WeddingRoomDeTails, \
+    WeddingBill, CostsIncurred, Rating, Notification, BookTrip, MenuInBill, WeddingRoomDeTails, \
     ServiceInBill, User
 
 
@@ -104,12 +104,12 @@ class WeddingBillSerializer(ModelSerializer):
                   "is_organize", "pay_off", "wedding_room"]
 
 
-class MenuAndCategorySerializer(ModelSerializer):
-    menu_category = FoodCategorySerializer()
-    menu = MenuSerializer()
-    class Meta:
-        model = MenuAndCategory
-        fields = ["menu_category", "menu"]
+# class MenuAndCategorySerializer(ModelSerializer):
+#     menu_category = FoodCategorySerializer()
+#     menu = MenuSerializer()
+#     class Meta:
+#         model = MenuAndCategory
+#         fields = ["menu_category", "menu"]
 
 
 class CostsIncurredSerializer(ModelSerializer):
