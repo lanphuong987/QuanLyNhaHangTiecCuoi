@@ -32,7 +32,7 @@ class WeddingRTViewSet(viewsets.ViewSet, generics.ListAPIView):
 class WeddingRoomViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = WeddingRoom.objects.filter(active=True)
     serializer_class = WeddingRoomSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
 
 class EmployeeViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -85,17 +85,21 @@ class WeddingRDetailsViewSet(viewsets.ViewSet, generics.ListAPIView):
     serializer_class = WeddingRDetailsSerializer
 
 
-class UserViewSet(viewsets.ViewSet, generics.CreateAPIView,
-                  generics.RetrieveAPIView):
+class UserViewSet(viewsets.ViewSet, generics.CreateAPIView,):
     queryset = User.objects.filter(is_active=True)
     serializer_class = UserSerializer
     parser_classes = [MultiPartParser, ]
 
     def get_permissions(self):
-        if self.action == 'retrieve':
+        if self.action == 'get_current_user':
             return [permissions.IsAuthenticated()]
 
         return [permissions.AllowAny()]
+
+    @action(methods=['get'], detail=False, url_path="current-user")
+    def get_current_user(self, request):
+        return Response(self.serializer_class(request.user, context={"request": request}).data,
+                        status=status.HTTP_200_OK)
 
 
 class RatingViewSet(viewsets.ViewSet, generics.ListAPIView):
