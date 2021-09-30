@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
     WeddingBill, MenuAndCategory, CostsIncurred, Rating, Notification, BookTrip, MenuInBill, WeddingRoomDeTails, \
     ServiceInBill, User
@@ -12,6 +12,17 @@ class WeddingRTSerializer(ModelSerializer):
 
 class WeddingRoomSerializer(ModelSerializer):
     # wedding_room_category = WeddingRTSerializer()
+    hinh_chinh_dien = SerializerMethodField()
+
+    def get_hinh_chinh_dien(self, WeddingRoom):
+        request = self.context['request']
+        name = WeddingRoom.hinh_chinh_dien.name
+        if name.startswith("static/"):
+            path = '/%s' %name
+        else:
+            path = '/static/%s' %name
+        return request.build_absolute_uri(path)
+
     class Meta:
         model = WeddingRoom
         fields = ["id", "name", "price", "create_date", "hinh_chinh_dien", "max" ]
@@ -49,12 +60,34 @@ class ServiceCategorySerializer(ModelSerializer):
 
 
 class MenuSerializer(ModelSerializer):
+    hinh = SerializerMethodField()
+
+    def get_hinh(self, Menu):
+        request = self.context['request']
+        name = Menu.hinh.name
+        if name.startswith("static/"):
+            path = '/%s' % name
+        else:
+            path = '/static/%s' % name
+        return request.build_absolute_uri(path)
+
     class Meta:
         model = Menu
         fields = ["name", "hinh", "price", "description", "create_date", "active"]
 
 
 class ServiceSerializer(ModelSerializer):
+    hinh = SerializerMethodField()
+
+    def get_hinh(self, Service):
+        request = self.context['request']
+        name = Service.hinh.name
+        if name.startswith("static/"):
+            path = '/%s' % name
+        else:
+            path = '/static/%s' % name
+        return request.build_absolute_uri(path)
+
     service_category = ServiceCategorySerializer()
     class Meta:
         model = Service
@@ -87,6 +120,18 @@ class CostsIncurredSerializer(ModelSerializer):
 
 
 class UserSerializer(ModelSerializer):
+    avatar = SerializerMethodField()
+
+    def get_avatar(self, User):
+        request = self.context['request']
+        name = User.avatar.name
+        if name.startswith("static/"):
+            path = '/%s' % name
+        else:
+            path = '/static/%s' % name
+        return request.build_absolute_uri(path)
+
+
     class Meta:
         model = User
         fields = ["id", "first_name", "last_name", "username", "password", "email", "phone", "avatar"]
@@ -94,9 +139,10 @@ class UserSerializer(ModelSerializer):
             'password': {'write_only': 'true'}
         }
 
+
     def create(self, validated_data):
         user = User(**validated_data)
-        user.set_password(validated_data['password'])
+        user.set_password(user.password)
         user.save()
 
         return user
