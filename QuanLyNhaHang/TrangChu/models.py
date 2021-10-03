@@ -21,8 +21,8 @@ class Employee(models.Model):
     date_start = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.user
 
 
 class Customer(models.Model):
@@ -35,7 +35,7 @@ class Customer(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.name
+        return self.fullname
 
 
 class CategoryBase(models.Model):
@@ -104,7 +104,7 @@ class WeddingRoomDeTails(models.Model):
 
 
 class WeddingBill(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, related_name='CustomerBill')
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, related_name='customerbill')
     create_date = models.DateTimeField(auto_now_add=True)
     date_start = models.DateTimeField()
     guest = models.IntegerField(null=False)
@@ -112,8 +112,8 @@ class WeddingBill(models.Model):
     earnest_money = models.DecimalField(null=False, max_digits= 15, decimal_places=2)
     is_organize = models.BooleanField(default=False)
     pay_off = models.BooleanField(default=False)
-    wedding_room = models.ForeignKey(WeddingRoom, on_delete=models.CASCADE, related_name='WeddingRoomBill')
-    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name='EmployeeBill')
+    wedding_room = models.ForeignKey(WeddingRoom, on_delete=models.CASCADE, related_name='weddingroombill')
+    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name='employeebill')
 
 
 class CostsIncurred(models.Model):
@@ -144,12 +144,12 @@ class BookTrip(models.Model):
 
 
 class MenuInBill(models.Model):
-    wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='MIBBill')
-    menu = models.ForeignKey(Menu, on_delete=models.SET_NULL, null=True, related_name='MIBMenu')
+    wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='weddingmenubills')
+    menu = models.ForeignKey(Menu, on_delete=models.SET_NULL, null=True, related_name='menubills')
     price = models.DecimalField(null=False, max_digits=15, decimal_places=2)
 
 
 class ServiceInBill(models.Model):
-    wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='SIBBill')
-    service = models.ForeignKey(Menu,on_delete=models.SET_NULL, null=True, related_name='SIBService')
+    wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='weddingservicebills')
+    service = models.ForeignKey(Menu,on_delete=models.SET_NULL, null=True, related_name='servicebills')
     price = models.DecimalField(null=False, max_digits=15, decimal_places=2)
