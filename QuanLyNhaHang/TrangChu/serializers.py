@@ -50,13 +50,13 @@ class CustomerSerializer(ModelSerializer):
 class FoodCategorySerializer(ModelSerializer):
     class Meta:
         model = FoodCategory
-        fields = ["name", "create_date", "description", "active"]
+        fields = ["id", "name", "create_date", "description", "active"]
 
 
 class ServiceCategorySerializer(ModelSerializer):
     class Meta:
         model = ServiceCategory
-        fields = ["name", "create_date", "description", "active"]
+        fields = ["id", "name", "create_date", "description", "active"]
 
 
 class MenuSerializer(ModelSerializer):

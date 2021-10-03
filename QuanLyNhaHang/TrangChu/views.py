@@ -1,12 +1,11 @@
 from django.http import HttpResponse
-from django.shortcuts import render
-from django.views import View
 from rest_framework import viewsets, generics, permissions, status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.http import Http404
+from .paginator import BasePagination
 from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
     WeddingBill, CostsIncurred, WeddingRoomDeTails, User, Rating, BookTrip, Notification, MenuInBill, \
     ServiceInBill
@@ -21,6 +20,20 @@ from django.conf import settings
 class WeddingRTViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = WeddingRoomType.objects.filter(active=True)
     serializer_class = WeddingRTSerializer
+    pagination_class = BasePagination
+
+    @action(methods=['get'], detail=True, url_path='weddingrooms')
+    def get_weddingrooms(self, request, pk):
+        weddingrooms = WeddingRoomType.objects.get(pk=pk).weddingrooms.filter(active=True)
+
+        kw = request.query_params.get('kw')
+        if kw is not None:
+            weddingrooms = weddingrooms.filter(subject__icontains=kw)
+
+        return Response(WeddingRoomSerializer(weddingrooms, many=True,
+                                              context={"request": request}).data,
+                        status=status.HTTP_200_OK)
+
 
     # def get_permissions(self):
     #     if self.action == 'list':
@@ -48,11 +61,37 @@ class CustomerViewSet(viewsets.ViewSet, generics.ListAPIView):
 class FoodCategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = FoodCategory.objects.filter(active=True)
     serializer_class = FoodCategorySerializer
+    pagination_class = BasePagination
+
+    @action(methods=['get'], detail=True, url_path='menus')
+    def get_menus(self, request, pk):
+        menus = FoodCategory.objects.get(pk=pk).menus.filter(active=True)
+
+        kw = request.query_params.get('kw')
+        if kw is not None:
+            menus = menus.filter(subject__icontains=kw)
+
+        return Response(MenuSerializer(menus, many=True,
+                                              context={"request": request}).data,
+                        status=status.HTTP_200_OK)
 
 
 class ServiceCategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = ServiceCategory.objects.filter(active=True)
     serializer_class = ServiceCategorySerializer
+    pagination_class = BasePagination
+
+    @action(methods=['get'], detail=True, url_path='services')
+    def get_services(self, request, pk):
+        services = ServiceCategory.objects.get(pk=pk).services.filter(active=True)
+
+        kw = request.query_params.get('kw')
+        if kw is not None:
+            services = services.filter(subject__icontains=kw)
+
+        return Response(Service(services, many=True,
+                                              context={"request": request}).data,
+                        status=status.HTTP_200_OK)
 
 
 class MenuViewSet(viewsets.ViewSet, generics.ListAPIView):

@@ -79,12 +79,12 @@ class ServiceCategory(CategoryBase):
 class WeddingRoom(Base):
     hinh_chinh_dien = models.ImageField(upload_to='sanhcuoi/%Y/%m')
     max = models.IntegerField(null=False)
-    wedding_room_category = models.ForeignKey(WeddingRoomType, on_delete=models.CASCADE, related_name='WeddingRoomType')
+    wedding_room_category = models.ForeignKey(WeddingRoomType, on_delete=models.CASCADE, related_name='weddingrooms')
 
 
 class Menu(Base):
     hinh = models.ImageField(upload_to='menu/%Y/%m')
-    food_category = models.ForeignKey(FoodCategory, null=True, on_delete=models.SET_NULL, related_name= 'FoodCategory')
+    food_category = models.ForeignKey(FoodCategory, null=True, on_delete=models.SET_NULL, related_name= 'menus')
 
 
 # class MenuAndCategory(models.Model):
@@ -94,7 +94,7 @@ class Menu(Base):
 
 class Service(Base):
     hinh = models.ImageField(upload_to='service/%Y/%m')
-    service_category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE, related_name='ServiceCategory')
+    service_category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE, related_name='services')
 
 
 class WeddingRoomDeTails(models.Model):
