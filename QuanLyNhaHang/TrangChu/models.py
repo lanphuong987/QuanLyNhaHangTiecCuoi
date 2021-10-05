@@ -100,7 +100,7 @@ class Service(Base):
 class WeddingRoomDeTails(models.Model):
     shift = models.IntegerField(null=False)
     price = models.DecimalField(null=False, max_digits= 15, decimal_places=2)
-    wedding_room = models.ForeignKey(WeddingRoom, on_delete=models.CASCADE, related_name='WeddingRopmDetails')
+    wedding_room = models.ForeignKey(WeddingRoom, on_delete=models.CASCADE, related_name='weddingroomdetails')
 
 
 class WeddingBill(models.Model):
