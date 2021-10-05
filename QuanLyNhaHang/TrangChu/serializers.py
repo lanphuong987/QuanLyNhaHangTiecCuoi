@@ -25,7 +25,7 @@ class WeddingRoomSerializer(ModelSerializer):
 
     class Meta:
         model = WeddingRoom
-        fields = ["id", "name", "price", "create_date", "hinh_chinh_dien", "max" ]
+        fields = ["id", "name", "price", "create_date", "hinh_chinh_dien", "max", "wedding_room_category_id", "description"]
 
 
 class WeddingRDetailsSerializer(ModelSerializer):
