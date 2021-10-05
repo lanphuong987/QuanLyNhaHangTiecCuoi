@@ -58,6 +58,19 @@ class WeddingRoomViewSet(viewsets.ViewSet, generics.ListAPIView):
         return Response(WeddingBillSerializer(weddingroombill, many=True,
                                               context={"request": request}).data,
                         status=status.HTTP_200_OK)
+
+
+    @action(methods=['get'], detail=True, url_path='weddingroomdetails')
+    def get_weddingroomdetails(self, request, pk):
+        weddingroomdetails = WeddingRoom.objects.get(pk=pk).weddingroomdetails.all()
+
+        kw = request.query_params.get('kw')
+        if kw is not None:
+            weddingroomdetails =  weddingroomdetails.filter(subject__icontains=kw)
+
+        return Response(WeddingRDetailsSerializer( weddingroomdetails, many=True,
+                                              context={"request": request}).data,
+                        status=status.HTTP_200_OK)
     # permission_classes = [permissions.IsAuthenticated]
 
 
