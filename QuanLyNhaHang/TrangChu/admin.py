@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.template.response import TemplateResponse
 
 from .models import Employee, WeddingRoom, WeddingRoomType, WeddingRoomDeTails, Service, ServiceCategory, Customer, User
-from .models import FoodCategory, Menu, MenuInBill, WeddingBill, CostsIncurred, Rating, Notification, BookTrip, ServiceInBill
+from .models import FoodCategory, Menu, MenuInBill, WeddingBill, CostsIncurred, Rating, Notification, Contact, ServiceInBill
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.urls import path
 # Register your models here.
@@ -81,7 +81,7 @@ admin.site.register(Menu)
 admin.site.register(MenuInBill)
 
 admin.site.register(Rating)
-admin.site.register(BookTrip)
+admin.site.register(Contact)
 admin.site.register(Notification)
 admin.site.register(CostsIncurred)
 

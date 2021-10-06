@@ -136,10 +136,12 @@ class Notification(models.Model):
     is_read = models.BooleanField(default=False)
 
 
-class BookTrip(models.Model):
-    time = models.DateTimeField(null=False, blank=False)
+class Contact(models.Model):
+    name = models.TextField(null=True, blank=False)
     is_confirmed = models.BooleanField(default=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='UserBook')
+    phone = models.TextField(null=True, blank=False)
+    email = models.TextField(null=True, blank=False)
+    content = models.TextField(null=True, blank=False)
     employee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='EmployeeBook')
 
 
