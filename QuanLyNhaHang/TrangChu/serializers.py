@@ -73,8 +73,13 @@ class MenuSerializer(ModelSerializer):
 
     class Meta:
         model = Menu
-        fields = ["name", "hinh", "price", "description", "create_date", "active"]
+        fields = ["id", "name", "hinh", "price", "description", "create_date", "active"]
 
+
+class MenuDetailSerialize(MenuSerializer):
+    class Meta:
+        model = MenuSerializer.Meta.model
+        fields = MenuSerializer.Meta.fields + ['food_category']
 
 class ServiceSerializer(ModelSerializer):
     hinh = SerializerMethodField()
