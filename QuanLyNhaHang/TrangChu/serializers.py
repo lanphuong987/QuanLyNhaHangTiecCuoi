@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
-    WeddingBill, CostsIncurred, Rating, Notification, BookTrip, MenuInBill, WeddingRoomDeTails, \
+    WeddingBill, CostsIncurred, Rating, Notification, Contact, MenuInBill, WeddingRoomDeTails, \
     ServiceInBill, User
 
 
@@ -73,7 +73,9 @@ class MenuSerializer(ModelSerializer):
 
     class Meta:
         model = Menu
+
         fields = ["id", "name", "hinh", "price", "description", "create_date", "active"]
+
 
 
 class MenuDetailSerialize(MenuSerializer):
@@ -139,7 +141,7 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "first_name", "last_name", "username", "password", "email", "phone", "avatar"]
+        fields = ["id", "first_name", "last_name", "username", "password", "email", "phone", "avatar", "date_joined"]
         extra_kwargs = {
             'password': {'write_only': 'true'}
         }
@@ -168,12 +170,11 @@ class NotificationSerializer(ModelSerializer):
         fields = ["user", "notification", "is_read"]
 
 
-class BookTripSerializer(ModelSerializer):
-    user = UserSerializer()
+class ContactSerializer(ModelSerializer):
     employee = EmployeeSerializer()
     class Meta:
-        model = BookTrip
-        fields = ["user", "employee", "time", "is_confirmed"]
+        model = Contact
+        fields = ["name", "employee", "phone", "is_confirmed", "email", "content"]
 
 
 class MenuInBillSerializer(ModelSerializer):

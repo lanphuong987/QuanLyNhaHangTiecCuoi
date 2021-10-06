@@ -7,12 +7,13 @@ from rest_framework.decorators import action
 from django.http import Http404
 from .paginator import BasePagination
 from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
-    WeddingBill, CostsIncurred, WeddingRoomDeTails, User, Rating, BookTrip, Notification, MenuInBill, \
+    WeddingBill, CostsIncurred, WeddingRoomDeTails, User, Rating, Contact, Notification, MenuInBill, \
     ServiceInBill
 from .serializers import WeddingRTSerializer, WeddingRoomSerializer, EmployeeSerializer, CustomerSerializer, \
     FoodCategorySerializer, ServiceCategorySerializer, MenuSerializer, ServiceSerializer, WeddingBillSerializer, \
     CostsIncurredSerializer, WeddingRDetailsSerializer, UserSerializer, RatingSerializer, \
-    BookTripSerializer, NotificationSerializer, MenuInBillSerializer, ServiceInBillSerializer, MenuDetailSerialize
+    ContactSerializer, NotificationSerializer, MenuInBillSerializer, ServiceInBillSerializer, MenuDetailSerialize
+
 from django.conf import settings
 # Create your views here.
 
@@ -177,7 +178,7 @@ class MenuViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
                         status=status.HTTP_200_OK)
 
 
-class ServiceViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
+class ServiceViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Service.objects.filter(active=True)
     serializer_class = ServiceSerializer
     pagination_class = BasePagination
@@ -185,7 +186,6 @@ class ServiceViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
     @action(methods=['get'], detail=True, url_path='servicebills')
     def get_servicebills(self, request, pk):
         servicebills = Service.objects.get(pk=pk).servicebills.all()
-
         kw = request.query_params.get('kw')
         if kw is not None:
             servicebills = servicebills.filter(subject__icontains=kw)
@@ -263,9 +263,9 @@ class RatingViewSet(viewsets.ViewSet, generics.ListAPIView):
     serializer_class = RatingSerializer
 
 
-class BookTripViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset =BookTrip.objects.all()
-    serializer_class = BookTripSerializer
+class ContactViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
 
 
 class NotificationViewSet(viewsets.ViewSet, generics.ListAPIView):
