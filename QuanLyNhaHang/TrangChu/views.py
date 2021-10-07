@@ -12,7 +12,7 @@ from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCatego
 from .serializers import WeddingRTSerializer, WeddingRoomSerializer, EmployeeSerializer, CustomerSerializer, \
     FoodCategorySerializer, ServiceCategorySerializer, MenuSerializer, ServiceSerializer, WeddingBillSerializer, \
     CostsIncurredSerializer, WeddingRDetailsSerializer, UserSerializer, RatingSerializer, \
-    ContactSerializer, NotificationSerializer, MenuInBillSerializer, ServiceInBillSerializer
+    ContactSerializer, NotificationSerializer, MenuInBillSerializer, ServiceInBillSerializer, MenuDetailSerialize
 from django.conf import settings
 # Create your views here.
 
@@ -42,10 +42,23 @@ class WeddingRTViewSet(viewsets.ViewSet, generics.ListAPIView):
     #     return [permissions.IsAuthenticated()]
 
 
-class WeddingRoomViewSet(viewsets.ViewSet, generics.ListAPIView):
+class WeddingRoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = WeddingRoom.objects.filter(active=True)
     serializer_class = WeddingRoomSerializer
     pagination_class = BasePagination
+
+    def get_queryset(self):
+        wedding_room = WeddingRoom.objects.filter(active=True)
+
+        q = self.request.query_params.get('q')
+        if q is not None:
+            wedding_room = wedding_room.filter(subject__icontains=q)
+
+        wedding_room_category_id = self.request.query_params.get('wedding_room_category_id')
+        if wedding_room_category_id is not None:
+            wedding_room = wedding_room.filter(wedding_room_category_id=wedding_room_category_id)
+
+        return wedding_room
 
     @action(methods=['get'], detail=True, url_path='weddingroombill')
     def get_weddingroombill(self, request, pk):
@@ -61,7 +74,7 @@ class WeddingRoomViewSet(viewsets.ViewSet, generics.ListAPIView):
     # permission_classes = [permissions.IsAuthenticated]
 
 
-class EmployeeViewSet(viewsets.ViewSet, generics.ListAPIView):
+class EmployeeViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Employee.objects.filter(active=True)
     serializer_class = EmployeeSerializer
     pagination_class = BasePagination
@@ -79,7 +92,7 @@ class EmployeeViewSet(viewsets.ViewSet, generics.ListAPIView):
                         status=status.HTTP_200_OK)
 
 
-class CustomerViewSet(viewsets.ViewSet, generics.ListAPIView):
+class CustomerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Customer.objects.filter(active=True)
     serializer_class = CustomerSerializer
     pagination_class = BasePagination
@@ -133,10 +146,23 @@ class ServiceCategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
                         status=status.HTTP_200_OK)
 
 
-class MenuViewSet(viewsets.ViewSet, generics.ListAPIView):
+class MenuViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Menu.objects.filter(active=True)
     serializer_class = MenuSerializer
     pagination_class = BasePagination
+
+    def get_queryset(self):
+        menus = Menu.objects.filter(active=True)
+
+        q = self.request.query_params.get('q')
+        if q is not None:
+            menus = menus.filter(subject__icontains=q)
+
+        foodcate_id = self.request.query_params.get('food_category')
+        if foodcate_id is not None:
+            menus = menus.filter(food_category=foodcate_id)
+
+        return menus
 
     @action(methods=['get'], detail=True, url_path='menubills')
     def get_menubills(self, request, pk):
@@ -150,10 +176,23 @@ class MenuViewSet(viewsets.ViewSet, generics.ListAPIView):
                                        context={"request": request}).data,
                         status=status.HTTP_200_OK)
 
-class ServiceViewSet(viewsets.ViewSet, generics.ListAPIView):
+
+class ServiceViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Service.objects.filter(active=True)
     serializer_class = ServiceSerializer
     pagination_class = BasePagination
+    def get_queryset(self):
+        servies = Service.objects.filter(active=True)
+
+        q = self.request.query_params.get('q')
+        if q is not None:
+            servies = servies.filter(subject__icontains=q)
+
+        service_category_id = self.request.query_params.get('service_category_id')
+        if service_category_id is not None:
+            servies = servies.filter(service_category_id=service_category_id)
+
+        return servies
 
     @action(methods=['get'], detail=True, url_path='servicebills')
     def get_servicebills(self, request, pk):
