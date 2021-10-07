@@ -73,7 +73,7 @@ class MenuSerializer(ModelSerializer):
 
     class Meta:
         model = Menu
-        fields = ["name", "hinh", "price", "description", "create_date", "active", "id"]
+        fields = ["id", "name", "hinh", "price", "description", "create_date", "active"]
 
 class MenuDetailSerialize(MenuSerializer):
     class Meta:
