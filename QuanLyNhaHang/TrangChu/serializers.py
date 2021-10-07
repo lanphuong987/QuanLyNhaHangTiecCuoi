@@ -73,10 +73,7 @@ class MenuSerializer(ModelSerializer):
 
     class Meta:
         model = Menu
-
         fields = ["id", "name", "hinh", "price", "description", "create_date", "active"]
-
-
 
 class MenuDetailSerialize(MenuSerializer):
     class Meta:
@@ -98,7 +95,7 @@ class ServiceSerializer(ModelSerializer):
     service_category = ServiceCategorySerializer()
     class Meta:
         model = Service
-        fields = ["name", "hinh", "price", "description", "create_date", "active", "service_category"]
+        fields = ["name", "hinh", "price", "description", "create_date", "active", "service_category","id"]
 
 
 class WeddingBillSerializer(ModelSerializer):
