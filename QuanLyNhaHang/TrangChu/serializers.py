@@ -138,7 +138,7 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "first_name", "last_name", "username", "password", "email", "phone", "avatar", "date_joined"]
+        fields = ["id", "first_name", "last_name", "username", "password", "email", "phone", "avatar", "date_joined", "is_superuser"]
         extra_kwargs = {
             'password': {'write_only': 'true'}
         }
@@ -168,10 +168,9 @@ class NotificationSerializer(ModelSerializer):
 
 
 class ContactSerializer(ModelSerializer):
-    employee = EmployeeSerializer()
     class Meta:
         model = Contact
-        fields = ["name", "employee", "phone", "is_confirmed", "email", "content"]
+        fields = ["name", "employee_id", "phone", "is_confirmed", "email", "content"]
 
 
 class MenuInBillSerializer(ModelSerializer):
