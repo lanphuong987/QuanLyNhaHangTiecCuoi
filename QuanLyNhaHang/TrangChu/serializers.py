@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
     WeddingBill, CostsIncurred, Rating, Notification, Contact, MenuInBill, WeddingRoomDeTails, \
-    ServiceInBill, User
+    ServiceInBill, User, Comment
 
 
 class WeddingRTSerializer(ModelSerializer):
@@ -104,7 +104,7 @@ class WeddingBillSerializer(ModelSerializer):
     wedding_room = WeddingRoomSerializer()
     class Meta:
         model = WeddingBill
-        fields = ["employee", "customer", "create_date", "date_start", "guest", "total", "earnest_money",
+        fields = ["id", "employee", "customer", "create_date", "date_start", "guest", "total", "earnest_money",
                   "is_organize", "pay_off", "wedding_room"]
 
 
@@ -138,7 +138,7 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "first_name", "last_name", "username", "password", "email", "phone", "avatar", "date_joined"]
+        fields = ["id", "first_name", "last_name", "username", "password", "email", "phone", "avatar", "date_joined", "is_superuser"]
         extra_kwargs = {
             'password': {'write_only': 'true'}
         }
@@ -153,11 +153,15 @@ class UserSerializer(ModelSerializer):
 
 
 class RatingSerializer(ModelSerializer):
-    wedding_bill = WeddingBillSerializer()
-    user = UserSerializer()
     class Meta:
         model = Rating
-        fields = ["user", "create_date", "comment", "is_contact", "wedding_bill"]
+        fields = ["id", "rate", "created_date"]
+
+
+class CommentSerializer(ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ["id", "content", "created_date", "updated_date"]
 
 
 class NotificationSerializer(ModelSerializer):

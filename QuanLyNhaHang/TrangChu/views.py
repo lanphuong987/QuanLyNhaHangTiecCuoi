@@ -1,3 +1,5 @@
+from typing import Union
+
 from django.http import HttpResponse
 from rest_framework import viewsets, generics, permissions, status
 from rest_framework.parsers import MultiPartParser
@@ -8,11 +10,11 @@ from django.http import Http404
 from .paginator import BasePagination
 from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
     WeddingBill, CostsIncurred, WeddingRoomDeTails, User, Rating, Contact, Notification, MenuInBill, \
-    ServiceInBill
+    ServiceInBill, Comment
 from .serializers import WeddingRTSerializer, WeddingRoomSerializer, EmployeeSerializer, CustomerSerializer, \
     FoodCategorySerializer, ServiceCategorySerializer, MenuSerializer, ServiceSerializer, WeddingBillSerializer, \
     CostsIncurredSerializer, WeddingRDetailsSerializer, UserSerializer, RatingSerializer, \
-    ContactSerializer, NotificationSerializer, MenuInBillSerializer, ServiceInBillSerializer, MenuDetailSerialize
+    ContactSerializer, NotificationSerializer, MenuInBillSerializer, ServiceInBillSerializer, CommentSerializer, MenuDetailSerialize
 from django.conf import settings
 # Create your views here.
 
@@ -207,6 +209,7 @@ class ServiceViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
     queryset = Service.objects.filter(active=True)
     serializer_class = ServiceSerializer
     pagination_class = BasePagination
+
     def get_queryset(self):
         servies = Service.objects.filter(active=True)
 
@@ -237,6 +240,12 @@ class WeddingBillViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrie
     serializer_class = WeddingBillSerializer
     pagination_class = BasePagination
 
+    def get_permissions(self):
+        if self.action in ['rate', 'add_comment']:
+            return [permissions.IsAuthenticated()]
+
+        return [permissions.AllowAny()]
+
     @action(methods=['get'], detail=True, url_path='weddingmenubills')
     def get_weddingmenubills(self, request, pk):
         weddingmenubills = WeddingBill.objects.get(pk=pk).weddingmenubills.all()
@@ -262,7 +271,51 @@ class WeddingBillViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrie
                                               context={"request": request}).data,
                         status=status.HTTP_200_OK)
 
-#
+    @action(methods=['post'], detail=True, url_path='rating')
+    def rate(self, request, pk):
+        try:
+            rating = int(request.data['rating'])
+        except Union[IndexError, ValueError]:
+            return Response (status=status.HTTP_400_BAD_REQUEST)
+        else:
+           r = Rating.objects.update_or_create(creator = request.user,
+                                               wedding_bill = self.get_object(),
+                                               defaults={"rate": rating})
+           return Response(RatingSerializer(r).data,
+                           status=status.HTTP_200_OK)
+
+
+    @action(methods=['post'], detail=True, url_path="add-comment")
+    def add_comment(self, request, pk):
+        content = request.data.get('content')
+        if content:
+            c = Comment.objects.create(content=content,
+                                       wedding_bill = self.get_object(),
+                                       creator = request.user)
+            return Response(CommentSerializer(c, context={"request": request}).data,
+                            status=status.HTTP_201_CREATED)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class CommentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.DestroyAPIView, generics.UpdateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def destroy(self, request, *args, **kwargs):
+        if request.user == self.get_object().creator:
+            return super().destroy(request, *args, **kwargs)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    def partial_update(self, request, *args, **kwargs):
+        if request.user == self.get_object().creator:
+            return super().partial_update(request, *args, **kwargs)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+
 # class MenuAndCategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
 #     queryset = MenuAndCategory.objects.all()
 #     serializer_class = MenuAndCategorySerializer
@@ -300,7 +353,7 @@ class RatingViewSet(viewsets.ViewSet, generics.ListAPIView):
     serializer_class = RatingSerializer
 
 
-class ContactViewSet(viewsets.ViewSet, generics.ListAPIView):
+class ContactViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIView):
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
 

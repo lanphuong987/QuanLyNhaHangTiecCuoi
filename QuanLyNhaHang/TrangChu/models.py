@@ -122,12 +122,29 @@ class CostsIncurred(models.Model):
     wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='Incurred')
 
 
-class Rating(models.Model):
-    create_date = models.DateTimeField(auto_now_add=True)
-    wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='BillRating')
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='UserRating')
-    comment = models.TextField(null=True, blank=False)
-    is_contact = models.BooleanField(default=False)
+class ActionBase (models.Model):
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+    wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='billrating')
+    creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='userrating')
+
+    class Meta:
+        abstract = True
+
+
+class Rating(ActionBase):
+    rate = models.PositiveSmallIntegerField(default=0)
+
+
+class Comment(models.Model):
+    content = models.TextField()
+    wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='billcomment')
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='usercomment')
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.content
 
 
 class Notification(models.Model):
