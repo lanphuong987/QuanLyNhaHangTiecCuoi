@@ -56,9 +56,9 @@ OAUTH2_INFO = {
     "client_serect": "JV68g3Q0hMFgc6kPs0v6bLulvoVHKft7d9TB4kkt2jnCtGvTlbintOLhqLF2HsrwQFH1g1Tx3kr4yLMIrIPuqmFs9qJJurtE9Wi0926bKo8yYDs2olS6aboN4GAVUYnC"
 }
 
-OAUTH2_PROVIDER = {
-     'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
- }
+# OAUTH2_PROVIDER = {
+#      'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
+#  }
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
