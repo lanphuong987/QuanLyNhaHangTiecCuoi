@@ -52,8 +52,8 @@ REST_FRAMEWORK = {
 }
 
 OAUTH2_INFO = {
-    "client_id": "TTUWwJJP95ANc7kpq0zEGqT3ff4y4MkKOIa5irNF",
-    "client_serect": "CW3Y3PTsZxQJFu7rMn4eOoWGmzxyiCcl14sW2cCCLKVDp4UTUDjAKsrwimDQ514adENWNM8uzycw6k53LCG89UHiHi01IjZoYlcWbtuP6gYksQG1CWPEMnzxLHc2Fygg"
+    "client_id": "v3JGsvi0RrLejSDJ9qq3tqs3XOKpLbS3zXts6HGW",
+    "client_serect": "JV68g3Q0hMFgc6kPs0v6bLulvoVHKft7d9TB4kkt2jnCtGvTlbintOLhqLF2HsrwQFH1g1Tx3kr4yLMIrIPuqmFs9qJJurtE9Wi0926bKo8yYDs2olS6aboN4GAVUYnC"
 }
 
 OAUTH2_PROVIDER = {
