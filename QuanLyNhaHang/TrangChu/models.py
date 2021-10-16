@@ -12,6 +12,9 @@ class User(AbstractUser):
     avatar = models.ImageField(upload_to='avatar/%Y/%m')
     phone = models.CharField(max_length=10, null=True, unique=True)
 
+    def __str__(self):
+        return self.username
+
 
 class Employee(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='User_Employee')
@@ -21,8 +24,8 @@ class Employee(models.Model):
     date_start = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
-    # def __str__(self):
-    #     return self.user
+    def __str__(self):
+        return self.user.username
 
 
 class Customer(models.Model):
@@ -102,6 +105,9 @@ class WeddingRoomDeTails(models.Model):
     price = models.DecimalField(null=False, max_digits= 15, decimal_places=2)
     wedding_room = models.ForeignKey(WeddingRoom, on_delete=models.CASCADE, related_name='weddingroomdetails')
 
+    def __str__(self):
+        return self.wedding_room.name
+
 
 class WeddingBill(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, related_name='customerbill')
@@ -114,6 +120,9 @@ class WeddingBill(models.Model):
     pay_off = models.BooleanField(default=False)
     wedding_room = models.ForeignKey(WeddingRoom, on_delete=models.CASCADE, related_name='weddingroombill')
     employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name='employeebill')
+
+    def __str__(self):
+        return self.customer.fullname
 
 
 class CostsIncurred(models.Model):
@@ -134,6 +143,9 @@ class ActionBase (models.Model):
 
 class Rating(ActionBase):
     rate = models.PositiveSmallIntegerField(default=0)
+
+    def __str__(self):
+        return self.creator.username
 
 
 class Comment(models.Model):

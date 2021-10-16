@@ -118,6 +118,7 @@ class WeddingBillSerializer(ModelSerializer):
 
 class CostsIncurredSerializer(ModelSerializer):
     wedding_bill = WeddingBillSerializer()
+
     class Meta:
         model = CostsIncurred
         fields = ["price", "reason", "wedding_bill"]
@@ -135,14 +136,12 @@ class UserSerializer(ModelSerializer):
             path = '/static/%s' % name
         return request.build_absolute_uri(path)
 
-
     class Meta:
         model = User
         fields = ["id", "first_name", "last_name", "username", "password", "email", "phone", "avatar", "date_joined", "is_superuser"]
         extra_kwargs = {
             'password': {'write_only': 'true'}
         }
-
 
     def create(self, validated_data):
         user = User(**validated_data)
