@@ -6,7 +6,6 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.http import Http404
 from .paginator import BasePagination
 from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
     WeddingBill, CostsIncurred, WeddingRoomDeTails, User, Rating, Contact, Notification, MenuInBill, \
@@ -73,7 +72,6 @@ class WeddingRoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrie
         return Response(WeddingBillSerializer(weddingroombill, many=True,
                                               context={"request": request}).data,
                         status=status.HTTP_200_OK)
-
 
     @action(methods=['get'], detail=True, url_path='weddingroomdetails')
     def get_weddingroomdetails(self, request, pk):
@@ -358,12 +356,6 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.UpdateAPIVi
     def get_current_user(self, request):
         return Response(self.serializer_class(request.user, context={"request": request}).data,
                         status=status.HTTP_200_OK)
-
-    def partial_update(self, request, *args, **kwargs):
-        if request.user == self.get_object():
-            return super().partial_update(request, *args, **kwargs)
-
-        return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 class RatingViewSet(viewsets.ViewSet, generics.ListAPIView):

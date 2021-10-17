@@ -7,6 +7,7 @@ from django.utils.html import mark_safe
 
 from .models import Employee, WeddingRoom, WeddingRoomType, WeddingRoomDeTails, Service, ServiceCategory, Customer, User, Comment
 from .models import FoodCategory, Menu, MenuInBill, WeddingBill, CostsIncurred, Rating, Notification, Contact, ServiceInBill
+from .serializers import UserSerializer
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.urls import path
 # Register your models here.
@@ -60,7 +61,17 @@ class WeddingRAdmin(admin.ModelAdmin):
         return mark_safe(" <img src = '/static/{img_url}' width='120px'/>".format(img_url=weddingroom.hinh_chinh_dien.name))
 
 
+class UserCreationForm(forms.ModelForm):
+    def save(self, commit=True):
+        user = super(UserCreationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
+
+
 class UserAdmin(admin.ModelAdmin):
+    form = UserCreationForm
     list_display = ["username", "first_name", "last_name", "email", "phone", "date_joined", "is_active"]
     readonly_fields = ["image"]
 
