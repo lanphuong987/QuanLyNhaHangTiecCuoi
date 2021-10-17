@@ -118,6 +118,7 @@ class WeddingBillSerializer(ModelSerializer):
 
 class CostsIncurredSerializer(ModelSerializer):
     wedding_bill = WeddingBillSerializer()
+
     class Meta:
         model = CostsIncurred
         fields = ["price", "reason", "wedding_bill"]
@@ -135,7 +136,6 @@ class UserSerializer(ModelSerializer):
             path = '/static/%s' % name
         return request.build_absolute_uri(path)
 
-
     class Meta:
         model = User
         fields = ["id", "first_name", "last_name", "username", "password", "email", "phone", "avatar", "date_joined", "is_superuser"]
@@ -143,13 +143,18 @@ class UserSerializer(ModelSerializer):
             'password': {'write_only': 'true'}
         }
 
-
     def create(self, validated_data):
         user = User(**validated_data)
         user.set_password(user.password)
         user.save()
 
         return user
+
+    def update(self, instance, validated_data):
+        if 'password' in validated_data:
+            password = validated_data.pop('password')
+            instance.set_password(password)
+        return super(UserSerializer, self).update(instance, validated_data)
 
 
 class RatingSerializer(ModelSerializer):

@@ -2,6 +2,7 @@ from .admin import admin_site
 from django.urls import path, re_path, include
 from . import views
 from rest_framework.routers import DefaultRouter
+from django.conf.urls import url
 
 
 router = DefaultRouter()
@@ -27,7 +28,7 @@ router.register('ServiceInBill', views.ServiceInBillViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('oauth2-info/', views.AuthInfo.as_view())
+    path('oauth2-info/', views.AuthInfo.as_view()),
     # path('welcome/<int:year>/', views.welcome, name="welcome"),
     # path('test/', views.TestView.as_view()),
     # re_path(r'welcome2/(?P<year>[0-9]{4})/$'),

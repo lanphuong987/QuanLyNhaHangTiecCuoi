@@ -6,7 +6,6 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.http import Http404
 from .paginator import BasePagination
 from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
     WeddingBill, CostsIncurred, WeddingRoomDeTails, User, Rating, Contact, Notification, MenuInBill, \
@@ -74,7 +73,6 @@ class WeddingRoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrie
                                               context={"request": request}).data,
                         status=status.HTTP_200_OK)
 
-
     @action(methods=['get'], detail=True, url_path='weddingroomdetails')
     def get_weddingroomdetails(self, request, pk):
         weddingroomdetails = WeddingRoom.objects.get(pk=pk).weddingroomdetails.all()
@@ -123,6 +121,23 @@ class CustomerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveA
         return Response(WeddingBillSerializer(customerbill, many=True,
                                               context={"request": request}).data,
                         status=status.HTTP_200_OK)
+
+    # @action(methods=['post'], detail=True, url_path="add-weddingbill")
+    # def add_weddingbill(self, request, pk):
+    #     try:
+    #         customer = self.get_object()
+    #     except Http404:
+    #         return Response(status=status.HTTP_404_NOT_FOUND)
+    #     else:
+    #         weddingbill = request.data.get("weddingbill")
+    #         if weddingbill is not None:
+    #             for weddingbill in weddingbill:
+    #                 w, _= WeddingBill.objects.get_or_create(name=weddingbill)
+    #                 customer.weddingbill.add(w)
+    #             customer.save()
+    #             return Response(self.serializer_class(customer).data,
+    #                             status=status.HTTP_201_CREATED)
+    #     return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class FoodCategoryViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
@@ -201,7 +216,6 @@ class MenuViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIVi
                         status=status.HTTP_200_OK)
 
 
-
 class ServiceViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Service.objects.filter(active=True)
     serializer_class = ServiceSerializer
@@ -255,9 +269,9 @@ class WeddingBillViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrie
                                               context={"request": request}).data,
                         status=status.HTTP_200_OK)
 
-
     @action(methods=['get'], detail=True, url_path='weddingservicebills')
     def get_weddingservicebills(self, request, pk):
+
         weddingservicebills = WeddingBill.objects.get(pk=pk).weddingservicebills.all()
 
         kw = request.query_params.get('kw')
@@ -280,7 +294,6 @@ class WeddingBillViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrie
                                                defaults={"rate": rating})
            return Response(RatingSerializer(r).data,
                            status=status.HTTP_200_OK)
-
 
     @action(methods=['post'], detail=True, url_path="add-comment")
     def add_comment(self, request, pk):
@@ -328,7 +341,7 @@ class WeddingRDetailsViewSet(viewsets.ViewSet, generics.ListAPIView):
     serializer_class = WeddingRDetailsSerializer
 
 
-class UserViewSet(viewsets.ViewSet, generics.CreateAPIView,):
+class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.UpdateAPIView):
     queryset = User.objects.filter(is_active=True)
     serializer_class = UserSerializer
     parser_classes = [MultiPartParser, ]
