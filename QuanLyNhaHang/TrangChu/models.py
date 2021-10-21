@@ -142,6 +142,7 @@ class Contact(models.Model):
     phone = models.TextField(null=True, blank=False)
     email = models.TextField(null=True, blank=False)
     content = models.TextField(null=True, blank=False)
+    address = models.TextField(null=True, blank=False)
     employee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='EmployeeBook')
 
 
