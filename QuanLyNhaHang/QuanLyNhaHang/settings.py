@@ -103,8 +103,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'quanlynhahangtieccuoidb',
         'USER': 'root',
-        'PASSWORD':'ngoduongvanxuyen',
-        'HOST':''
+        'PASSWORD':'',
+        'HOST':'',
+        'PORT': ''
 
     }
 }
