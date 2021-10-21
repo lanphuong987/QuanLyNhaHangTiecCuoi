@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
     WeddingBill, CostsIncurred, Rating, Notification, Contact, MenuInBill, WeddingRoomDeTails, \
-    ServiceInBill, User
+    ServiceInBill, User, Comment
 
 
 class WeddingRTSerializer(ModelSerializer):
@@ -73,7 +73,7 @@ class MenuSerializer(ModelSerializer):
 
     class Meta:
         model = Menu
-        fields = ["name", "hinh", "price", "description", "create_date", "active", "id"]
+        fields = ["id", "name", "hinh", "price", "description", "create_date", "active"]
 
 class MenuDetailSerialize(MenuSerializer):
     class Meta:
@@ -104,7 +104,7 @@ class WeddingBillSerializer(ModelSerializer):
     wedding_room = WeddingRoomSerializer()
     class Meta:
         model = WeddingBill
-        fields = ["employee", "customer", "create_date", "date_start", "guest", "total", "earnest_money",
+        fields = ["id", "employee", "customer", "create_date", "date_start", "guest", "total", "earnest_money",
                   "is_organize", "pay_off", "wedding_room"]
 
 
@@ -118,6 +118,7 @@ class WeddingBillSerializer(ModelSerializer):
 
 class CostsIncurredSerializer(ModelSerializer):
     wedding_bill = WeddingBillSerializer()
+
     class Meta:
         model = CostsIncurred
         fields = ["price", "reason", "wedding_bill"]
@@ -135,14 +136,12 @@ class UserSerializer(ModelSerializer):
             path = '/static/%s' % name
         return request.build_absolute_uri(path)
 
-
     class Meta:
         model = User
         fields = ["id", "first_name", "last_name", "username", "password", "email", "phone", "avatar", "date_joined", "is_superuser"]
         extra_kwargs = {
             'password': {'write_only': 'true'}
         }
-
 
     def create(self, validated_data):
         user = User(**validated_data)
@@ -151,13 +150,23 @@ class UserSerializer(ModelSerializer):
 
         return user
 
+    def update(self, instance, validated_data):
+        if 'password' in validated_data:
+            password = validated_data.pop('password')
+            instance.set_password(password)
+        return super(UserSerializer, self).update(instance, validated_data)
+
 
 class RatingSerializer(ModelSerializer):
-    wedding_bill = WeddingBillSerializer()
-    user = UserSerializer()
     class Meta:
         model = Rating
-        fields = ["user", "create_date", "comment", "is_contact", "wedding_bill"]
+        fields = ["id", "rate", "created_date"]
+
+
+class CommentSerializer(ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ["id", "content", "created_date", "updated_date"]
 
 
 class NotificationSerializer(ModelSerializer):

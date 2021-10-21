@@ -4,6 +4,7 @@ from collections import deque
 # import abstract as abstract
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.hashers import make_password
 from ckeditor.fields import RichTextField
 # Create your models here.
 
@@ -11,6 +12,9 @@ from ckeditor.fields import RichTextField
 class User(AbstractUser):
     avatar = models.ImageField(upload_to='avatar/%Y/%m')
     phone = models.CharField(max_length=10, null=True, unique=True)
+
+    def __str__(self):
+        return self.username
 
 
 class Employee(models.Model):
@@ -21,8 +25,8 @@ class Employee(models.Model):
     date_start = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
-    # def __str__(self):
-    #     return self.user
+    def __str__(self):
+        return self.user.username
 
 
 class Customer(models.Model):
@@ -100,7 +104,10 @@ class Service(Base):
 class WeddingRoomDeTails(models.Model):
     shift = models.IntegerField(null=False)
     price = models.DecimalField(null=False, max_digits= 15, decimal_places=2)
-    wedding_room = models.ForeignKey(WeddingRoom, on_delete=models.CASCADE, related_name='WeddingRopmDetails')
+    wedding_room = models.ForeignKey(WeddingRoom, on_delete=models.CASCADE, related_name='weddingroomdetails')
+
+    def __str__(self):
+        return self.wedding_room.name
 
 
 class WeddingBill(models.Model):
@@ -115,6 +122,9 @@ class WeddingBill(models.Model):
     wedding_room = models.ForeignKey(WeddingRoom, on_delete=models.CASCADE, related_name='weddingroombill')
     employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name='employeebill')
 
+    def __str__(self):
+        return self.customer.fullname
+
 
 class CostsIncurred(models.Model):
     price = models.DecimalField(null=False, max_digits= 15, decimal_places=2)
@@ -122,12 +132,32 @@ class CostsIncurred(models.Model):
     wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='Incurred')
 
 
-class Rating(models.Model):
-    create_date = models.DateTimeField(auto_now_add=True)
-    wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='BillRating')
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='UserRating')
-    comment = models.TextField(null=True, blank=False)
-    is_contact = models.BooleanField(default=False)
+class ActionBase (models.Model):
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+    wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='billrating')
+    creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='userrating')
+
+    class Meta:
+        abstract = True
+
+
+class Rating(ActionBase):
+    rate = models.PositiveSmallIntegerField(default=0)
+
+    def __str__(self):
+        return self.creator.username
+
+
+class Comment(models.Model):
+    content = models.TextField()
+    wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='billcomment')
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='usercomment')
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.content
 
 
 class Notification(models.Model):
