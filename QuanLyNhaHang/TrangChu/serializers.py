@@ -179,7 +179,7 @@ class NotificationSerializer(ModelSerializer):
 class ContactSerializer(ModelSerializer):
     class Meta:
         model = Contact
-        fields = ["name", "employee_id", "phone", "is_confirmed", "email", "content"]
+        fields = ["name", "employee_id", "phone", "is_confirmed", "email", "content","address"]
 
 
 class MenuInBillSerializer(ModelSerializer):
