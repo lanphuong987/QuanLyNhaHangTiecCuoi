@@ -62,7 +62,7 @@ class Base(models.Model):
     description = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=True)
     create_date = models.DateTimeField(auto_now_add=True)
-    description = RichTextField(blank=True, null=True)
+    description = RichTextField(null=True)
 
     def __str__(self):
         return self.name
