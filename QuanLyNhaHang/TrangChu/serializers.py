@@ -125,16 +125,16 @@ class CostsIncurredSerializer(ModelSerializer):
 
 
 class UserSerializer(ModelSerializer):
-    avatar = SerializerMethodField()
-
-    def get_avatar(self, User):
-        request = self.context['request']
-        name = User.avatar.name
-        if name.startswith("static/"):
-            path = '/%s' % name
-        else:
-            path = '/static/%s' % name
-        return request.build_absolute_uri(path)
+    # avatar = SerializerMethodField()
+    #
+    # def get_avatar(self, User):
+    #     request = self.context['request']
+    #     name = User.avatar.name
+    #     if name.startswith("static/"):
+    #         path = '/%s' % name
+    #     else:
+    #         path = '/static/%s' % name
+    #     return request.build_absolute_uri(path)
 
     class Meta:
         model = User
@@ -155,6 +155,11 @@ class UserSerializer(ModelSerializer):
             password = validated_data.pop('password')
             instance.set_password(password)
         return super(UserSerializer, self).update(instance, validated_data)
+
+    # def save(self, **kwargs):
+    #     if self.instance.avatar:
+    #         self.instance.avatar.delete()
+    #     return super().save()
 
 
 class RatingSerializer(ModelSerializer):
