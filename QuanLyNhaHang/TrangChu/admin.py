@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.template.response import TemplateResponse
 from django.utils.html import mark_safe
 
-from .models import Employee, WeddingRoom, WeddingRoomType, WeddingRoomDeTails, Service, ServiceCategory, Customer, User, Comment
+from .models import Employee, WeddingRoom, WeddingRoomType, WeddingRoomDeTails, Service, ServiceCategory, User, Comment
 from .models import FoodCategory, Menu, MenuInBill, WeddingBill, CostsIncurred, Rating, Notification, Contact, ServiceInBill
 from .serializers import UserSerializer
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
@@ -83,16 +83,12 @@ class EmployeeAdmin(admin.ModelAdmin):
     list_display = ["user", "address", "position", "type", "date_start", "active"]
 
 
-class CustomerAdmin(admin.ModelAdmin):
-    list_display = ["user", "fullname", "phonecus", "address", "email", "date_start", "active"]
-
-
 class WeddingRDetailAdmin(admin.ModelAdmin):
     list_display = ["shift", "price", "wedding_room"]
 
 
 class WeddingBillAdmin (admin.ModelAdmin):
-    list_display = ["customer", "date_start", "wedding_room", "total", "employee"]
+    list_display = ["user", "date_start", "wedding_room", "total", "employee"]
 
 
 class MenuBillAdmin(admin.ModelAdmin):
@@ -188,7 +184,6 @@ admin_site = QLNHAppAdminSite('NHTC')
 # admin_site.register(ServiceCategory)
 admin.site.register(User, UserAdmin)
 admin.site.register(Employee, EmployeeAdmin)
-admin.site.register(Customer, CustomerAdmin)
 
 admin.site.register(WeddingRoomType, WeddingRTAdmin)
 admin.site.register(WeddingRoom, WeddingRAdmin)

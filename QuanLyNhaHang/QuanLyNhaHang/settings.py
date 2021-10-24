@@ -45,7 +45,7 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 12,
+    'PAGE_SIZE': 9,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     )
@@ -55,10 +55,9 @@ OAUTH2_INFO = {
     "client_id": "v3JGsvi0RrLejSDJ9qq3tqs3XOKpLbS3zXts6HGW",
     "client_serect": "JV68g3Q0hMFgc6kPs0v6bLulvoVHKft7d9TB4kkt2jnCtGvTlbintOLhqLF2HsrwQFH1g1Tx3kr4yLMIrIPuqmFs9qJJurtE9Wi0926bKo8yYDs2olS6aboN4GAVUYnC"
 }
-
-# OAUTH2_PROVIDER = {
-#      'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
-#  }
+OAUTH2_PROVIDER = {
+      'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
+  }
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -103,7 +102,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'quanlynhahangtieccuoidb',
         'USER': 'root',
-        'PASSWORD':'ngoduongvanxuyen',
+        'PASSWORD':'Phuong123%',
         'HOST':''
 
     }

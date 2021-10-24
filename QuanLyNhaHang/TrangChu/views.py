@@ -7,10 +7,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .paginator import BasePagination
-from .models import WeddingRoomType, WeddingRoom, Employee, Customer, FoodCategory, ServiceCategory, Menu, Service, \
+from .models import WeddingRoomType, WeddingRoom, Employee, FoodCategory, ServiceCategory, Menu, Service, \
     WeddingBill, CostsIncurred, WeddingRoomDeTails, User, Rating, Contact, Notification, MenuInBill, \
     ServiceInBill, Comment
-from .serializers import WeddingRTSerializer, WeddingRoomSerializer, EmployeeSerializer, CustomerSerializer, \
+from .serializers import WeddingRTSerializer, WeddingRoomSerializer, EmployeeSerializer, \
     FoodCategorySerializer, ServiceCategorySerializer, MenuSerializer, ServiceSerializer, WeddingBillSerializer, \
     CostsIncurredSerializer, WeddingRDetailsSerializer, UserSerializer, RatingSerializer, \
     ContactSerializer, NotificationSerializer, MenuInBillSerializer, ServiceInBillSerializer, CommentSerializer, MenuDetailSerialize
@@ -104,23 +104,6 @@ class EmployeeViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveA
                                               context={"request": request}).data,
                         status=status.HTTP_200_OK)
 
-
-class CustomerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
-    queryset = Customer.objects.filter(active=True)
-    serializer_class = CustomerSerializer
-    pagination_class = BasePagination
-
-    @action(methods=['get'], detail=True, url_path='customerbill')
-    def get_customerbill(self, request, pk):
-        customerbill = Customer.objects.get(pk=pk).customerbill.all()
-
-        kw = request.query_params.get('kw')
-        if kw is not None:
-            customerbill = customerbill.filter(subject__icontains=kw)
-
-        return Response(WeddingBillSerializer(customerbill, many=True,
-                                              context={"request": request}).data,
-                        status=status.HTTP_200_OK)
 
     # @action(methods=['post'], detail=True, url_path="add-weddingbill")
     # def add_weddingbill(self, request, pk):

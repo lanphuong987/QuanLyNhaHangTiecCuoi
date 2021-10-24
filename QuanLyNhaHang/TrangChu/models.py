@@ -11,7 +11,10 @@ from ckeditor.fields import RichTextField
 
 class User(AbstractUser):
     avatar = models.ImageField(upload_to='avatar/%Y/%m')
-    phone = models.CharField(max_length=10, null=True, unique=True)
+    phone = models.CharField(max_length=15, null=True, unique=True)
+    address = models.TextField(null=True, blank=True)
+    about = models.TextField(null=True, blank=True)
+    id_card = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.username
@@ -27,19 +30,6 @@ class Employee(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
-class Customer(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='User_Customer')
-    fullname = models.TextField(null=True, blank=True)
-    phonecus = models.CharField(max_length=10, null=True, unique=True)
-    email = models.TextField(null=True, blank=True)
-    address = models.TextField(null=True, blank=True)
-    date_start = models.DateTimeField(auto_now_add=True)
-    active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.fullname
 
 
 class CategoryBase(models.Model):
@@ -111,7 +101,7 @@ class WeddingRoomDeTails(models.Model):
 
 
 class WeddingBill(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, related_name='customerbill')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='customerbill')
     create_date = models.DateTimeField(auto_now_add=True)
     date_start = models.DateTimeField()
     guest = models.IntegerField(null=False)
@@ -123,7 +113,7 @@ class WeddingBill(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name='employeebill')
 
     def __str__(self):
-        return self.customer.fullname
+        return self.user.name
 
 
 class CostsIncurred(models.Model):
