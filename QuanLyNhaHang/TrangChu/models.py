@@ -113,7 +113,7 @@ class WeddingBill(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name='employeebill')
 
     def __str__(self):
-        return self.user.name
+        return self.user.username
 
 
 class CostsIncurred(models.Model):

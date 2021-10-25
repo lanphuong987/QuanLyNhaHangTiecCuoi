@@ -70,10 +70,12 @@ class MenuSerializer(ModelSerializer):
         model = Menu
         fields = ["id", "name", "hinh", "price", "description", "create_date", "active"]
 
+
 class MenuDetailSerialize(MenuSerializer):
     class Meta:
         model = MenuSerializer.Meta.model
         fields = MenuSerializer.Meta.fields + ['food_category']
+
 
 class ServiceSerializer(ModelSerializer):
     hinh = SerializerMethodField()
@@ -148,12 +150,12 @@ class RatingSerializer(ModelSerializer):
 
 
 class WeddingBillSerializer(ModelSerializer):
-    customer = UserSerializer()
     employee = EmployeeSerializer()
     wedding_room = WeddingRoomSerializer()
+
     class Meta:
         model = WeddingBill
-        fields = ["id", "employee", "customer", "create_date", "date_start", "guest", "total", "earnest_money",
+        fields = ["id", "employee", "create_date", "date_start", "guest", "total", "earnest_money",
                   "is_organize", "pay_off", "wedding_room"]
 
 

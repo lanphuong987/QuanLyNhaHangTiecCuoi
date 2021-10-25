@@ -229,7 +229,7 @@ class ServiceViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
                         status=status.HTTP_200_OK)
 
 
-class WeddingBillViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
+class WeddingBillViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = WeddingBill.objects.all()
     serializer_class = WeddingBillSerializer
     pagination_class = BasePagination
