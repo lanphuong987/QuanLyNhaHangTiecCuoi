@@ -86,6 +86,17 @@ class WeddingRoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrie
                         status=status.HTTP_200_OK)
     # permission_classes = [permissions.IsAuthenticated]
 
+    @action(methods=['post'], detail=True, url_path="add-weddingbill")
+    def add_weddingbill(self, request, pk):
+        user = request.data.get('user')
+        if user:
+            w = WeddingBill.objects.create(wedding_room=self.get_object(),
+                                           user=request.user)
+            return Response(WeddingBillSerializer(w, context={"request": request}).data,
+                            status=status.HTTP_201_CREATED)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class EmployeeViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Employee.objects.filter(active=True)
@@ -294,7 +305,7 @@ class WeddingBillViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.List
 class CommentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.DestroyAPIView, generics.UpdateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def destroy(self, request, *args, **kwargs):
         if request.user == self.get_object().creator:
@@ -339,6 +350,12 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.UpdateAPIVi
     def get_current_user(self, request):
         return Response(self.serializer_class(request.user, context={"request": request}).data,
                         status=status.HTTP_200_OK)
+
+    # def partial_update(self, request, *args, **kwargs):
+    #     if request.user == self.get_object().user:
+    #         return super().partial_update(request, *args, **kwargs)
+    #
+    #     return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 class RatingViewSet(viewsets.ViewSet, generics.ListAPIView):

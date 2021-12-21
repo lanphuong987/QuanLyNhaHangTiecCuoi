@@ -38,8 +38,7 @@ class WeddingRDetailsSerializer(ModelSerializer):
 class EmployeeSerializer(ModelSerializer):
     class Meta:
         model = Employee
-        fields = ["position", "address", "type", "date_start"]
-
+        fields = ["id", "position", "address", "type", "date_start"]
 
 
 class FoodCategorySerializer(ModelSerializer):
