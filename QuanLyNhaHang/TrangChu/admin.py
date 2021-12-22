@@ -5,9 +5,8 @@ from django.db.models import Count
 from django.template.response import TemplateResponse
 from django.utils.html import mark_safe
 
-from .models import Employee, WeddingRoom, WeddingRoomType, WeddingRoomDeTails, Service, ServiceCategory, User, Comment
-from .models import FoodCategory, Menu, MenuInBill, WeddingBill, CostsIncurred, Rating, Notification, Contact, ServiceInBill
-from .serializers import UserSerializer
+
+from .models import *
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.urls import path
 # Register your models here.
@@ -87,16 +86,20 @@ class WeddingRDetailAdmin(admin.ModelAdmin):
     list_display = ["shift", "price", "wedding_room"]
 
 
+class MenuBillInlineAdmin(admin.StackedInline):
+    model = MenuInBill
+    fk_name = 'wedding_bill'
+
+
+class ServiceBillInlineAdmin(admin.StackedInline):
+    model = ServiceInBill
+    fk_name = 'wedding_bill'
+
+
 class WeddingBillAdmin (admin.ModelAdmin):
-    list_display = ["user", "date_start", "wedding_room", "total", "employee"]
-
-
-class MenuBillAdmin(admin.ModelAdmin):
-    list_display = ["wedding_bill", "menu", "price"]
-
-
-class ServiceBillAdmin(admin.ModelAdmin):
-    list_display = ["wedding_bill", "service", "price"]
+    list_display = ["id", "user", "date_start", "wedding_room", "total"]
+    inlines = [MenuBillInlineAdmin, ServiceBillInlineAdmin, ]
+    ordering = ("-date_start",)
 
 
 class ServiceInline(admin.StackedInline):
@@ -192,11 +195,11 @@ admin.site.register(WeddingBill, WeddingBillAdmin)
 
 admin.site.register(Service, ServiceAdmin)
 admin.site.register(ServiceCategory, ServiceCateAdmin)
-admin.site.register(ServiceInBill, ServiceBillAdmin)
+
 
 admin.site.register(FoodCategory, FoodCateAdmin)
 admin.site.register(Menu, MenuAdmin)
-admin.site.register(MenuInBill, MenuBillAdmin)
+
 
 admin.site.register(Rating, RatingAdmin)
 admin.site.register(Comment, CommentAdmin)
