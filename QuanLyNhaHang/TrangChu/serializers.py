@@ -1,7 +1,5 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from .models import WeddingRoomType, WeddingRoom, Employee, FoodCategory, ServiceCategory, Menu, Service, \
-    WeddingBill, CostsIncurred, Rating, Notification, Contact, MenuInBill, WeddingRoomDeTails, \
-    ServiceInBill, User, Comment
+from .models import *
 
 
 class WeddingRTSerializer(ModelSerializer):
@@ -38,8 +36,7 @@ class WeddingRDetailsSerializer(ModelSerializer):
 class EmployeeSerializer(ModelSerializer):
     class Meta:
         model = Employee
-        fields = ["position", "address", "type", "date_start"]
-
+        fields = ["id", "position", "address", "type", "date_start"]
 
 
 class FoodCategorySerializer(ModelSerializer):
@@ -70,10 +67,12 @@ class MenuSerializer(ModelSerializer):
         model = Menu
         fields = ["id", "name", "hinh", "price", "description", "create_date", "active"]
 
+
 class MenuDetailSerialize(MenuSerializer):
     class Meta:
         model = MenuSerializer.Meta.model
         fields = MenuSerializer.Meta.fields + ['food_category']
+
 
 class ServiceSerializer(ModelSerializer):
     hinh = SerializerMethodField()
@@ -148,13 +147,18 @@ class RatingSerializer(ModelSerializer):
 
 
 class WeddingBillSerializer(ModelSerializer):
-    customer = UserSerializer()
-    employee = EmployeeSerializer()
+    # employee = EmployeeSerializer()
+    menus = MenuSerializer(many=True)
+    services = ServiceSerializer(many=True)
     wedding_room = WeddingRoomSerializer()
+
+    def get_user(self, rating):
+        return UserSerializer(rating.user, context={"request": self.context.get('request')}).data
+
     class Meta:
         model = WeddingBill
-        fields = ["id", "employee", "customer", "create_date", "date_start", "guest", "total", "earnest_money",
-                  "is_organize", "pay_off", "wedding_room"]
+        fields = ["id", "create_date", "date_start", "guest", "total", "earnest_money",
+                  "is_organize", "pay_off", "wedding_room", "user", "menus", "services"]
 
 
 class CommentSerializer(ModelSerializer):

@@ -110,10 +110,12 @@ class WeddingBill(models.Model):
     is_organize = models.BooleanField(default=False)
     pay_off = models.BooleanField(default=False)
     wedding_room = models.ForeignKey(WeddingRoom, on_delete=models.CASCADE, related_name='weddingroombill')
-    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name='employeebill')
+    # employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name='employeebill')
+    menus = models.ManyToManyField(Menu, related_name="bill_menus", blank=True, null=True, through="MenuInBill")
+    services = models.ManyToManyField(Service, related_name="bill_services", blank=True, null=True, through="ServiceInBill")
 
     def __str__(self):
-        return self.user.name
+        return self.user.username
 
 
 class CostsIncurred(models.Model):
@@ -174,5 +176,5 @@ class MenuInBill(models.Model):
 
 class ServiceInBill(models.Model):
     wedding_bill = models.ForeignKey(WeddingBill, on_delete=models.CASCADE, related_name='weddingservicebills')
-    service = models.ForeignKey(Menu,on_delete=models.SET_NULL, null=True, related_name='servicebills')
+    service = models.ForeignKey(Service,on_delete=models.SET_NULL, null=True, related_name='servicebills')
     price = models.DecimalField(null=False, max_digits=15, decimal_places=2)

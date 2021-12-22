@@ -7,16 +7,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .paginator import BasePagination
-from .models import WeddingRoomType, WeddingRoom, Employee, FoodCategory, ServiceCategory, Menu, Service, \
-    WeddingBill, CostsIncurred, WeddingRoomDeTails, User, Rating, Contact, Notification, MenuInBill, \
-    ServiceInBill, Comment
-from .serializers import WeddingRTSerializer, WeddingRoomSerializer, EmployeeSerializer, \
-    FoodCategorySerializer, ServiceCategorySerializer, MenuSerializer, ServiceSerializer, WeddingBillSerializer, \
-    CostsIncurredSerializer, WeddingRDetailsSerializer, UserSerializer, RatingSerializer, \
-    ContactSerializer, NotificationSerializer, MenuInBillSerializer, ServiceInBillSerializer, CommentSerializer, MenuDetailSerialize
+from .serializers import *
 from django.conf import settings
+from django.shortcuts import render
+import dateutil.parser as parser
+
+
 # Create your views here.
 from django.db.models import Q
+
 
 class WeddingRTViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = WeddingRoomType.objects.filter(active=True)
@@ -86,6 +85,17 @@ class WeddingRoomViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrie
                         status=status.HTTP_200_OK)
     # permission_classes = [permissions.IsAuthenticated]
 
+    @action(methods=['post'], detail=True, url_path="add-weddingbill")
+    def add_weddingbill(self, request, pk):
+        user = request.data.get('user')
+        if user:
+            w = WeddingBill.objects.create(wedding_room=self.get_object(),
+                                           user=request.user)
+            return Response(WeddingBillSerializer(w, context={"request": request}).data,
+                            status=status.HTTP_201_CREATED)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class EmployeeViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Employee.objects.filter(active=True)
@@ -103,24 +113,6 @@ class EmployeeViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveA
         return Response(WeddingBillSerializer(employeebill, many=True,
                                               context={"request": request}).data,
                         status=status.HTTP_200_OK)
-
-
-    # @action(methods=['post'], detail=True, url_path="add-weddingbill")
-    # def add_weddingbill(self, request, pk):
-    #     try:
-    #         customer = self.get_object()
-    #     except Http404:
-    #         return Response(status=status.HTTP_404_NOT_FOUND)
-    #     else:
-    #         weddingbill = request.data.get("weddingbill")
-    #         if weddingbill is not None:
-    #             for weddingbill in weddingbill:
-    #                 w, _= WeddingBill.objects.get_or_create(name=weddingbill)
-    #                 customer.weddingbill.add(w)
-    #             customer.save()
-    #             return Response(self.serializer_class(customer).data,
-    #                             status=status.HTTP_201_CREATED)
-    #     return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class FoodCategoryViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
@@ -229,10 +221,11 @@ class ServiceViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
                         status=status.HTTP_200_OK)
 
 
-class WeddingBillViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
-    queryset = WeddingBill.objects.all()
+class WeddingBillViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIView, generics.RetrieveAPIView):
+    queryset = WeddingBill.objects.order_by('-id').all()
     serializer_class = WeddingBillSerializer
     pagination_class = BasePagination
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
         if self.action in ['rate', 'add_comment']:
@@ -290,11 +283,55 @@ class WeddingBillViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrie
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+    @action(methods=['post'], detail=False, url_path="add_weddingbill")
+    def add_weddingbill(self, request):
+        date_start = request.data.get('date_start')
+        date = parser.parse(date_start, fuzzy=True)
+        guest = request.data.get('guest')
+        total = request.data.get('total')
+        earnest_money = request.data.get('earnest_money')
+        is_organize = request.data.get('is_organize')
+        pay_off = request.data.get('pay_off')
+        wedding_room = request.data.get('wedding_room')
+        menus = request.data.get('menus')
+        services = request.data.get('services')
+
+        try:
+            room = WeddingRoom.objects.get(id=wedding_room)
+        except WeddingRoom.DoesNotExist:
+            return Response(data='Weddingroom does not exist', status=status.HTTP_400_BAD_REQUEST)
+
+        if date_start and guest and total and earnest_money and is_organize and pay_off and wedding_room and menus:
+            f = WeddingBill.objects.create(date_start = date,
+                                           guest = guest,
+                                           total = total,
+                                           earnest_money = earnest_money,
+                                           is_organize = is_organize,
+                                           pay_off = pay_off,
+                                           wedding_room = room,
+                                           user = request.user)
+            weddingbill = WeddingBill.objects.order_by('-id').first()
+            for menu in menus:
+                menu_food = Menu.objects.get(id=menu['menu'])
+                MenuInBill.objects.create(price = menu['price'],
+                                          menu = menu_food,
+                                          wedding_bill = weddingbill)
+
+            for item in services:
+                service = Service.objects.get(id=item['service'])
+                ServiceSerializer.objects.create(price = item['price'],
+                                                 service = service,
+                                                 wedding_bill = weddingbill)
+            return Response(WeddingBillSerializer(f, context={"request": request}).data,
+                            status=status.HTTP_201_CREATED)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class CommentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.DestroyAPIView, generics.UpdateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def destroy(self, request, *args, **kwargs):
         if request.user == self.get_object().creator:
@@ -339,6 +376,12 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.UpdateAPIVi
     def get_current_user(self, request):
         return Response(self.serializer_class(request.user, context={"request": request}).data,
                         status=status.HTTP_200_OK)
+
+    # def partial_update(self, request, *args, **kwargs):
+    #     if request.user == self.get_object().user:
+    #         return super().partial_update(request, *args, **kwargs)
+    #
+    #     return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 class RatingViewSet(viewsets.ViewSet, generics.ListAPIView):
