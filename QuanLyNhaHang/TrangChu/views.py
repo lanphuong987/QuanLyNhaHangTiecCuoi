@@ -346,11 +346,6 @@ class CommentViewSet(viewsets.ViewSet, generics.ListAPIView, generics.DestroyAPI
         return Response(status=status.HTTP_403_FORBIDDEN)
 
 
-# class MenuAndCategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
-#     queryset = MenuAndCategory.objects.all()
-#     serializer_class = MenuAndCategorySerializer
-
-
 class CostsIncurredViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = CostsIncurred.objects.all()
     serializer_class = CostsIncurredSerializer
@@ -419,13 +414,3 @@ class AuthInfo(APIView):
     def get(self, request):
         return Response(settings.OAUTH2_INFO, status=status.HTTP_200_OK)
 
-# def welcome(request, year):
-#     return HttpResponse("HELLO " + str(year))
-#
-#
-# class TestView(View):
-#     def get(self, request):
-#         return HttpResponse("Testing")
-#
-#     def post(self,request):
-#         pass
