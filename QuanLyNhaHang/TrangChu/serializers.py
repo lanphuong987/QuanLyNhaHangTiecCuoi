@@ -1,5 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from .models import *
+from rest_framework.fields import SerializerMethodField, HiddenField, CurrentUserDefault
 
 
 class WeddingRTSerializer(ModelSerializer):
@@ -92,28 +93,7 @@ class ServiceSerializer(ModelSerializer):
         fields = ["name", "hinh", "price", "description", "create_date", "active", "service_category","id"]
 
 
-
-# class MenuAndCategorySerializer(ModelSerializer):
-#     menu_category = FoodCategorySerializer()
-#     menu = MenuSerializer()
-#     class Meta:
-#         model = MenuAndCategory
-#         fields = ["menu_category", "menu"]
-
-
-
 class UserSerializer(ModelSerializer):
-    # avatar = SerializerMethodField()
-    #
-    # def get_avatar(self, User):
-    #     request = self.context['request']
-    #     name = User.avatar.name
-    #     if name.startswith("static/"):
-    #         path = '/%s' % name
-    #     else:
-    #         path = '/static/%s' % name
-    #     return request.build_absolute_uri(path)
-
     class Meta:
         model = User
         fields = ["id", "first_name", "last_name", "username", "password", "email", "phone", "avatar", "date_joined", "is_superuser", "about", "address"]
@@ -134,20 +114,19 @@ class UserSerializer(ModelSerializer):
             instance.set_password(password)
         return super(UserSerializer, self).update(instance, validated_data)
 
-    # def save(self, **kwargs):
-    #     if self.instance.avatar:
-    #         self.instance.avatar.delete()
-    #     return super().save()
-
 
 class RatingSerializer(ModelSerializer):
+    creator = HiddenField(default=CurrentUserDefault())
+
+    def get_creator(self, rating):
+        return UserSerializer(rating.creator, context={"request": self.context.get('request')}).data
+
     class Meta:
         model = Rating
-        fields = ["id", "rate", "created_date"]
+        fields = ["id", "rate", "created_date", "creator"]
 
 
 class WeddingBillSerializer(ModelSerializer):
-    # employee = EmployeeSerializer()
     menus = MenuSerializer(many=True)
     services = ServiceSerializer(many=True)
     wedding_room = WeddingRoomSerializer()
@@ -162,9 +141,14 @@ class WeddingBillSerializer(ModelSerializer):
 
 
 class CommentSerializer(ModelSerializer):
+    creator = SerializerMethodField()
+
+    def get_creator(self, comment):
+        return UserSerializer(comment.creator, context={"request": self.context.get('request')}).data
+
     class Meta:
         model = Comment
-        fields = ["id", "content", "created_date", "updated_date"]
+        fields = ["id", "content", "created_date", "updated_date", "creator"]
 
 
 class NotificationSerializer(ModelSerializer):
